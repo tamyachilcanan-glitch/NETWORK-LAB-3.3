@@ -16,27 +16,33 @@ while True:
         print("Goodbye!")
         break
 
+    a_input = input("Enter first number: ")
+    b_input = input("Enter second number: ")
+
     try:
-        a = float(input("Enter first number: "))
-        b = float(input("Enter second number: "))
-
-        payload = {
-            "a": a,
-            "b": b,
-            "operation": operation
-        }
-
-        s = socket.socket()                        # Create TCP socket
-
-        s.connect((HOST, PORT))                    # Connect to server
-
-        s.send(json.dumps(payload).encode())       # Send JSON request
-
-        response = s.recv(1024).decode()           # Receive server response
-
-        print("Server response:", response)
-
-        s.close()                                  # Close connection
-
+        a = float(a_input)
     except ValueError:
-        print("Please enter numeric values for a and b.")
+        a = a_input
+
+    try:
+        b = float(b_input)
+    except ValueError:
+        b = b_input
+
+    payload = {
+        "a": a,
+        "b": b,
+        "operation": operation
+    }
+
+    s = socket.socket()                            # Create TCP socket
+
+    s.connect((HOST, PORT))                        # Connect to server
+
+    s.send(json.dumps(payload).encode())           # Send JSON request
+
+    response = s.recv(1024).decode()               # Receive server response
+
+    print("Server response:", response)
+
+    s.close()                                      # Close connection
