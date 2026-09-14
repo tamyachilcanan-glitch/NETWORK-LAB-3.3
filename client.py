@@ -1,8 +1,8 @@
-import socket                                      # TCP socket communication
-import json                                        # JSON serialization
+import socket
+import json
 
-HOST = "18.117.252.35"                             # Server IP address
-PORT = 12345                                       # Server port
+HOST = "18.117.252.35"
+PORT = 12345
 
 while True:
 
@@ -16,18 +16,8 @@ while True:
         print("Goodbye!")
         break
 
-    a_input = input("Enter first number: ")
-    b_input = input("Enter second number: ")
-
-    try:
-        a = float(a_input)
-    except ValueError:
-        a = a_input
-
-    try:
-        b = float(b_input)
-    except ValueError:
-        b = b_input
+    a = input("Enter first number: ")
+    b = input("Enter second number: ")
 
     payload = {
         "a": a,
@@ -35,14 +25,13 @@ while True:
         "operation": operation
     }
 
-    s = socket.socket()                            # Create TCP socket
+    s = socket.socket()
+    s.connect((HOST, PORT))
 
-    s.connect((HOST, PORT))                        # Connect to server
+    s.send(json.dumps(payload).encode())
 
-    s.send(json.dumps(payload).encode())           # Send JSON request
-
-    response = s.recv(1024).decode()               # Receive server response
+    response = s.recv(1024).decode()
 
     print("Server response:", response)
 
-    s.close()                                      # Close connection
+    s.close()
