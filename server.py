@@ -6,9 +6,10 @@ HOST = "0.0.0.0"                                   # Listen on all network inter
 PORT = 12345                                       # Server port
 
 # Configure server log
-logging.basicConfig(
-    filename="server.log",
-    level=logging.INFO,
+
+logging.basicConfig(            
+    filename="server.log",                          # Save logs in server.log
+    level=logging.INFO,                             # Save informational messages
     format="%(asctime)s - %(message)s"
 )
 
@@ -31,18 +32,18 @@ def handle_request(data):                          # Process one client request
             operation == ""
         ):
             return {
-                "error": "Missing parameters",
+                "error": "Missing parameters",                     # If it is missing, it returns code 400.
                 "code": 400
             }
 
         # TODO 2: Validate that a and b are valid numbers
-        # The dummy client sends what the user writes.
+        # The dummy client sends what the user writes (text)
         # The SERVER performs the validation.
         try:
-            a = float(a)
+            a = float(a)                                             #The server converts them into numbers.
             b = float(b)
 
-        except (ValueError, TypeError):
+        except (ValueError, TypeError):                              #If it is not a number, the server returns “Invalid input”
             return {
                 "error": "Invalid input",
                 "code": 422
@@ -52,7 +53,7 @@ def handle_request(data):                          # Process one client request
         if operation == "add":
             return {
                 "result": a + b,
-                "code": 200
+                "code": 200                                     # Valid operations
             }
 
         elif operation == "sub":
@@ -90,24 +91,23 @@ def handle_request(data):                          # Process one client request
 
     except json.JSONDecodeError:
 
-        # TODO 6: Invalid JSON
+        # TODO 6: Invalid JSON                            # Return error if received JSON is invalid
         return {
             "error": "Invalid JSON",
             "code": 400
         }
 
-    except Exception:
-
+    except Exception:                                      # Handle unexpected server errors                                                       
         return {
             "error": "Server error",
             "code": 500
         }
 
 
-# Create TCP socket
+# # Create the server socket
 server_socket = socket.socket()                    # Create IPv4 TCP socket
 
-server_socket.setsockopt(
+server_socket.setsockopt(                          # Allow reuse of the same address and port
     socket.SOL_SOCKET,
     socket.SO_REUSEADDR,
     1
@@ -116,36 +116,38 @@ server_socket.setsockopt(
 server_socket.bind((HOST, PORT))                   # Bind socket to IP and port
 server_socket.listen(5)                            # Start listening for connections
 
-print(f"Calculator server running on {HOST}:{PORT}")
+print(f"Calculator server running on {HOST}:{PORT}")        # Show that the server is running
 
 
 while True:                                        # Keep server running
 
     conn, addr = server_socket.accept()            # Accept incoming connection
 
-    print(f"\nConnection from {addr}")
+    print(f"\nConnection from {addr}")             # Show the client address
 
     data = conn.recv(1024).decode()                # Receive client data
 
     response = handle_request(data)                # Process request on server
 
     # Information used ONLY for server logging
-    client_ip = addr[0]
-    server_ip = conn.getsockname()[0]
+    client_ip = addr[0]                            # Get the client IP for the log
+    server_ip = conn.getsockname()[0]              # Get the server IP for the log
 
-    try:
+    try:                                            # Get request data for the log
         payload = json.loads(data)
 
         a = payload.get("a")
         b = payload.get("b")
         operation = payload.get("operation")
 
-    except (json.JSONDecodeError, AttributeError):
+    except (json.JSONDecodeError, AttributeError):    # Use N/A if the request data cannot be read
         a = "N/A"
         b = "N/A"
         operation = "N/A"
 
+    
     # Status message for the SERVER log
+    
     if response["code"] == 200:
         status_message = "Successful operation"
 
@@ -159,14 +161,15 @@ while True:                                        # Keep server running
         status_message = "Server error"
 
     # Result or error for the log
-    if "result" in response:
+    
+    if "result" in response:                                #This checks if the response contains a result or an error.
         result_text = f"Result: {response['result']}"
 
     else:
         result_text = f"Error: {response['error']}"
 
     # Log stays ONLY on the server
-    log_message = (
+    log_message = (                                        # Build the complete server log message
         f"Client IP: {client_ip} | "
         f"Server IP: {server_ip} | "
         f"a: {a} | "
