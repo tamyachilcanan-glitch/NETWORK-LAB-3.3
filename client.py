@@ -1,7 +1,7 @@
 import socket
 import json
 
-HOST = "18.117.252.35"
+HOST = "18.117.252.35"                                 # Server IP and port
 PORT = 12345
 
 while True:                                            #  allows multiple operations in one session
@@ -16,22 +16,22 @@ while True:                                            #  allows multiple operat
         print("Goodbye!")
         break
 
-    a = input("Enter first number: ")
-    b = input("Enter second number: ")
+    a = input("Enter first number: ")                      # gets the number a y b 
+    b = input("Enter second number: ")                     # without validation.
 
     payload = {
-        "a": a,
+        "a": a,                                            # Collect the values ​​into a dictionary.
         "b": b,
         "operation": operation
     }
 
-    s = socket.socket()
-    s.connect((HOST, PORT))
+    s = socket.socket()                                    # This creates the client socket.
+    s.connect((HOST, PORT))                                # The client connects to the server using the IP address and port.
 
-    s.send(json.dumps(payload).encode())
+    s.send(json.dumps(payload).encode())                   # converts the data to JSON and then to bytes.
 
-    response = s.recv(1024).decode()
+    response = s.recv(1024).decode()                        # recv receives the server response, and decode converts the bytes to text.
 
-    print("Server response:", response)
+    print("Server response:", response)                     # Display response
 
-    s.close()
+    s.close()                                               # Close connection
