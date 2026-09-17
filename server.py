@@ -43,6 +43,7 @@ def handle_request(data):                          # Process one client request 
             a = float(a)                                             #The server converts them into numbers.
             b = float(b)
 
+                                                            # The server validates the numbers.
         except (ValueError, TypeError):                              #If it is not a number, the server returns “Invalid input”
             return {
                 "error": "Invalid input",
