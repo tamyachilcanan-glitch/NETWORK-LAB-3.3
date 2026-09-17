@@ -14,7 +14,7 @@ logging.basicConfig(
 )
 
 
-def handle_request(data):                          # Process one client request
+def handle_request(data):                          # Process one client request (Validation)
     try:
         payload = json.loads(data)                 # Convert JSON string into dictionary
 
